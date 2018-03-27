@@ -33,7 +33,6 @@ namespace FrickHazardModding
                 Debug.Log("Failed to load AssetBundle!");
                 return null;
             }
-            LoadedAssetBundle.Unload(false);
             return LoadedAssetBundle;
         }
 

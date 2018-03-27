@@ -1,0 +1,10 @@
+ManifestFileVersion: 0
+CRC: 228528964
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: scp099eyeprefab
+      Dependencies: {}
+    Info_1:
+      Name: tv
+      Dependencies: {}

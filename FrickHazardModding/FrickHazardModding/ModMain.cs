@@ -8,8 +8,10 @@ namespace FrickHazardModding
     public static class ModMain
     {
         private static bool started = false;
+        private static bool spawnedScp099Instance = false;
+	    private static bool startedScp099Mod = false;
 
-        public static void Start(string dataPath)
+		public static void Start(string dataPath)
         {
             if (started) throw (new Exception("Mod Has Already Started"));
 
@@ -36,22 +38,32 @@ namespace FrickHazardModding
             SCP173SkinChanger.ChangeModel(scp173, bigBirdModelGameObject);
         }
 
-	    public static void InitiliazeSCP099(GameObject scp173, Camera playerCamera)
+	    public static void InitiliazeSCP099Mod(Camera playerCamera)
 	    {
-		    LogScene("sceneDump");
-	        AssetBundle scp099ModAssets = AssetLoader.Instance.LoadAssetBundle("scp099eyeprefab");
-            GameObject scp099EyePrefab = scp099ModAssets.LoadAsset<GameObject>("Assets/scp099eyeprefab.prefab");
+		    if (startedScp099Mod == true) return;
+			AssetBundle scp099ModEyeAssets = AssetLoader.Instance.LoadAssetBundle("scp099eyeprefab");
+            GameObject scp099EyePrefab = scp099ModEyeAssets.LoadAsset<GameObject>("Assets/scp099eyeprefab.prefab");
+	        GameObject scp099EyeGameObject = GameObject.Instantiate(scp099EyePrefab) as GameObject;
+            var effect = playerCamera.gameObject.AddComponent<SCP099Effect>();
+		    effect.EyePrefab = scp099EyeGameObject;
+			// 11 and 12 seem to be used for walls and floor
+		    effect.RayCastMask = (1 << 11) | (1 << 12);
+		    startedScp099Mod = true;
 
-            if (scp173.transform.Find("Model") != null)
-		    {
-			    GameObject oldModelObject = scp173.transform.Find("Model").transform.Find("U3DMesh").gameObject;
-			    SCP099Canvas canvas = oldModelObject.AddComponent<SCP099Canvas>();
-				canvas.playerTransform = playerCamera.transform;
-			    canvas.Effect = playerCamera.gameObject.AddComponent<SCP099Effect>();
-			    canvas.Effect.EyePrefab = scp099EyePrefab;
-				// 11 and 12 seem to be used for walls and floor
-			    canvas.Effect.RayCastMask = (1 << 11) | (1 << 12);
-		    }
 	    }
+
+	    public static void SpawnSCP099TV(Vector3 position, Camera playerCamera)
+	    {
+            if(spawnedScp099Instance == true) return;
+		    AssetBundle scp099ModWeaponizedScp099Assets = AssetLoader.Instance.LoadAssetBundle("tv");
+			GameObject scp099TvPrefab = scp099ModWeaponizedScp099Assets.LoadAsset<GameObject>("Assets/tv.prefab");
+		    GameObject scp099TvGameObject = GameObject.Instantiate(scp099TvPrefab) as GameObject;
+		    SCP099Canvas canvas = scp099TvGameObject.AddComponent<SCP099Canvas>();
+		    canvas.playerTransform = playerCamera.transform;
+			scp099TvGameObject.transform.position = position;
+		    canvas.Effect = playerCamera.GetComponent<SCP099Effect>();
+	        scp099ModWeaponizedScp099Assets.Unload(false);
+	        spawnedScp099Instance = true;
+        }
     }
 }
