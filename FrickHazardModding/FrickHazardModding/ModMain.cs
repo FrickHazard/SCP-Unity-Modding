@@ -41,11 +41,9 @@ namespace FrickHazardModding
 	    public static void InitiliazeSCP099Mod(Camera playerCamera)
 	    {
 		    if (startedScp099Mod == true) return;
-			AssetBundle scp099ModEyeAssets = AssetLoader.Instance.LoadAssetBundle("scp099eyeprefab");
-            GameObject scp099EyePrefab = scp099ModEyeAssets.LoadAsset<GameObject>("Assets/scp099eyeprefab.prefab");
-	        GameObject scp099EyeGameObject = GameObject.Instantiate(scp099EyePrefab) as GameObject;
+            AssetBundle scp099ModEyeAssets = AssetLoader.Instance.LoadAssetBundle("scp099eyeprefab");
             var effect = playerCamera.gameObject.AddComponent<SCP099Effect>();
-		    effect.EyePrefab = scp099EyeGameObject;
+		    effect.EyePrefab = GameObject.Instantiate(scp099ModEyeAssets.LoadAsset<GameObject>("Assets/scp099eyeprefab.prefab")); ;
 			// 11 and 12 seem to be used for walls and floor
 		    effect.RayCastMask = (1 << 11) | (1 << 12);
 		    startedScp099Mod = true;
